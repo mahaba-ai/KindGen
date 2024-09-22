@@ -4,8 +4,8 @@ toolbarMode = "viewer"
 
 [theme]
 base ="light"
-primaryColor ="#F63366"
+primaryColor ="#0C344D"
 backgroundColor = "white"
-secondaryBackgroundColor = "#F63366"
-textColor ="black"
+secondaryBackgroundColor = "#e4f2e5"
+textColor ="#0C344D"
 font = "serif"
