@@ -26,4 +26,4 @@ try:
 except Exception as e:
     raise ConnectionError(f"Failed to initialize Cohere client: {str(e)}")
 
-__all__ = ["cohere_client"]
+__all__ = ["cohere_client", "logger"]

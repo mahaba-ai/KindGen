@@ -2,32 +2,23 @@
     GPT Related Functions
 """
 
-from typing import List, Dict, Generator
+from typing import Generator
 
-import cohere
 from kindgen import cohere_client
 
 
-def stream(background_info: str, chat_history: List[Dict[str, str]] = []) -> Generator:
+def stream(message: str) -> Generator:
     """Get response from Cohere and stream response"""
-    cohere_history = format_chat_history_cohere(chat_history, background_info)
-
-    stream = cohere_client.chat_stream(
-        chat_history=cohere_history[:-1], message=cohere_history[-1]["message"]
-    )
+    stream = cohere_client.chat_stream(message=message)
 
     for event in stream:
         if event.event_type == "text-generation":
             yield event.text
 
 
-def gpt_response(prompt: str, api_key: str) -> str:
+def chat(prompt: str) -> str:
     """Get response from Cohere, with option to get output in json format"""
 
-    co = cohere.Client(
-        api_key=api_key,
-    )
+    response = cohere_client.chat(message=prompt)
 
-    response = co.chat(message=prompt)
-
-    return response.text
+    return response
