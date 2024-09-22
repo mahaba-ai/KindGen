@@ -1,5 +1,7 @@
 import json
 
+from kindgen.models import ChatHistory
+
 
 def extract_json(input_string: str) -> dict:
     """String to Json function"""
@@ -15,3 +17,14 @@ def extract_json(input_string: str) -> dict:
 
     except json.JSONDecodeError:
         raise
+
+
+def format_chat_history(chat_history: ChatHistory) -> ChatHistory:
+    return [
+        {
+            "role": "CHATBOT" if entry["role"] == "assistant" else "USER",
+            "text": entry["text"],
+        }
+        for entry in chat_history
+        if entry["role"] in ["assistant", "user"]
+    ]
