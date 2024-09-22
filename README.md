@@ -9,6 +9,7 @@
     "editor.formatOnType": true,
     "editor.defaultFormatter": "ms-python.black-formatter"
 }
+```
 
 3. Run the following.
 ```
