@@ -16,9 +16,9 @@ def stream(message: str) -> Generator:
             yield event.text
 
 
-def chat(prompt: str) -> str:
+def chat(message: str) -> str:
     """Get response from Cohere, with option to get output in json format"""
 
-    response = cohere_client.chat(message=prompt)
+    response = cohere_client.chat(message=message)
 
     return response
