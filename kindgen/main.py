@@ -1,5 +1,5 @@
 """
-    Main Application Script to run for a given Workflow
+Main Application Script to run for a given Workflow
 """
 
 from kindgen.stages import (
@@ -28,7 +28,7 @@ def main():
 
     stage_6_results = run_stage_6(stage_5_results)
 
-    return True
+    return stage_6_results
 
 
 if __name__ == "__main__":
