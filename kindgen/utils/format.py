@@ -13,5 +13,5 @@ def extract_json(input_string: str) -> dict:
     try:
         return json.loads(input_string_stripped)
 
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
         raise

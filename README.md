@@ -14,6 +14,8 @@
 poetry shell
 poetry install
 
+pre-commit install
+
 pytest 
 ```
 
