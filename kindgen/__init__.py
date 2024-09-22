@@ -1,9 +1,18 @@
 import os
+import logging
 
 import cohere
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+)
+
+logger = logging.getLogger(__name__)
 
 API_KEY = os.getenv("COHERE_API_KEY")
 

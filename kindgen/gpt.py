@@ -8,16 +8,6 @@ import cohere
 from kindgen import cohere_client
 
 
-def test_api_key():
-    """Function to test Cohere API Key is working"""
-    try:
-        cohere_client.generate(prompt="sample prompt", max_tokens=3)
-
-        return True
-    except:
-        return False
-
-
 def stream(background_info: str, chat_history: List[Dict[str, str]] = []) -> Generator:
     """Get response from Cohere and stream response"""
     cohere_history = format_chat_history_cohere(chat_history, background_info)
