@@ -2,6 +2,7 @@
 GPT Related Functions
 """
 
+import time
 from typing import Generator
 
 from kindgen import cohere_client
@@ -19,6 +20,14 @@ def stream(message: str, chat_history: ChatHistory = None) -> Generator:
     for event in stream:
         if event.event_type == "text-generation":
             yield event.text
+
+
+def fake_stream(message: str) -> Generator[str, None, None]:
+    """Yield individual tokens (words) from the message like a chatbot."""
+    time.sleep(1)
+    for word in message.split():
+        yield f"{word} "
+        time.sleep(0.05)
 
 
 def chat(message: str, chat_history: ChatHistory = None) -> str:

@@ -11,25 +11,26 @@ from kindgen.stages import (
     run_stage_6,
 )
 
+stage_function_map = {
+    1: run_stage_1,
+    2: run_stage_2,
+    3: run_stage_3,
+    4: run_stage_4,
+    5: run_stage_5,
+    6: run_stage_6,
+}
 
-def main():
+
+def respond(message, chat_history, conversation_stage: tuple[int, int]):
     """
     Process must yield results where required after / in each substage.
     """
-    stage_1_results = run_stage_1()
+    stage, substage = conversation_stage
 
-    stage_2_results = run_stage_2(stage_1_results)
-
-    stage_3_results = run_stage_3(stage_2_results)
-
-    stage_4_results = run_stage_4(stage_3_results)
-
-    stage_5_results = run_stage_5(stage_4_results)
-
-    stage_6_results = run_stage_6(stage_5_results)
-
-    return stage_6_results
+    for response in stage_function_map[stage](message, chat_history, substage):
+        yield response
 
 
 if __name__ == "__main__":
-    main()
+    for item in respond("a child is beign a pain", None, (1, 1)):
+        print(item)
