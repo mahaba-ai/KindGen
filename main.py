@@ -17,7 +17,7 @@ def main():
     except subprocess.CalledProcessError as e:
         logger.critical(f"An error occurred while launching the application: {e}")
     except KeyboardInterrupt:
-        logger.info("\nApplication interrupted. Exiting gracefully...")
+        logger.info("\nClosing...")
         sys.exit(0)
 
 
