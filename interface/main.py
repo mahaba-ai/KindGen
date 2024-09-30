@@ -3,6 +3,7 @@ import streamlit as st
 
 from kindgen import logger
 from kindgen.models import ChatHistory, Stage
+from kindgen.gpt import fake_stream
 from kindgen.main import respond
 from interface.assets import LOGO_PATH, ASSISTANT_AVATAR_PATH, USER_AVATAR_PATH
 from interface.methods import reset_conversation
@@ -17,7 +18,7 @@ st.set_page_config(
 if "state" not in st.session_state:
     st.session_state["state"] = {
         "begin_demo": False,
-        "stage": Stage(stage=1, substage=1),
+        "stage": Stage(stage=1, substage=1, val=0),
         "NEED_REBOOT": False,
     }
 
@@ -38,8 +39,35 @@ def TEXT_RESPONSE(user_input: str, CURRENT_STAGE: Stage, **kwargs):
     if user_input:
         st.chat_message("user", avatar=AVATAR["user"]).write(user_input)
 
+    print("assistant message = ")
     assistant_message = st.chat_message("assistant", avatar=AVATAR["assistant"])
 
+    if CURRENT_STAGE.stage == 1 and CURRENT_STAGE.substage == 1:
+        STATE["stage"].update_val(True)
+        state_passed = False
+
+        while not state_passed:
+            response_gen = respond(
+                message=user_input,
+                chat_history=CONVERSATION,
+                conversation_stage=CURRENT_STAGE,
+            )
+            response = "".join(response_gen)
+            print(f"assistant response = {response}")
+
+            if "yes" in response.lower():
+                state_passed = True
+            else:
+                assistant_response = assistant_message.write_stream(
+                    fake_stream("I'm not sure I understand. Could you try again?")
+                )
+                CONVERSATION.append({"role": "assistant", "text": assistant_response})
+                STATE["stage"].update_val(False)
+                user_input = None
+                while not user_input:
+                    user_input = st.session_state.get("user_input", None)
+
+    STATE["stage"].update_val(False)
     assistant_response = assistant_message.write_stream(
         respond(
             message=user_input,
@@ -47,10 +75,12 @@ def TEXT_RESPONSE(user_input: str, CURRENT_STAGE: Stage, **kwargs):
             conversation_stage=CURRENT_STAGE,
         )
     )
+
     time.sleep(2)
     if user_input:
         CONVERSATION.append({"role": "user", "text": user_input})
 
+    print(CONVERSATION)
     CONVERSATION.append({"role": "assistant", "text": assistant_response})
     STATE["stage"].next_substage()
     response_handler()
@@ -144,9 +174,9 @@ if PLACEHOLDER_STATE["show"]:
             STATE["solutions_tried"] = st.multiselect(
                 "What have you tried?",
                 [
-                    "Telling them off in classy",
-                    "Talking to them privatelye",
-                    "I’ve threatened them with detention",
+                    "Telling them off in class",
+                    "Talking to them privately",
+                    "I've threatened them with detention",
                     "I wrote to their parents",
                     "Other (please write)",  # NOTE: How will we implement 'other' ?
                 ],
@@ -180,5 +210,11 @@ if PLACEHOLDER_STATE["show"]:
             CONVERSATION.append({"role": "user", "text": SELECTIONS})
             st.rerun()
 
-if user_input := st.chat_input():
-    response_handler(user_input)
+
+def main():
+    if user_input := st.chat_input():
+        response_handler(user_input)
+
+
+if __name__ == "__main__":
+    main()

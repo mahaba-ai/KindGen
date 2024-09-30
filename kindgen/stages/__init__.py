@@ -1,5 +1,6 @@
 from kindgen.stages.stage_1.main import (
     run_stage_1_substage_1,
+    run_stage_1_substage_1_eval,
     run_stage_1_substage_3,
     run_stage_1_substage_4,
     run_stage_1_substage_6,
@@ -15,6 +16,7 @@ from kindgen.stages.stage_6 import main as run_stage_6
 
 __all__ = [
     "run_stage_1_substage_1",
+    "run_stage_1_substage_1_eval",
     "run_stage_1_substage_3",
     "run_stage_1_substage_4",
     "run_stage_1_substage_6",

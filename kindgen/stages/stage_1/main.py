@@ -1,11 +1,16 @@
 from typing import Generator
 
 from kindgen.gpt import stream, fake_stream
-from kindgen.stages.stage_1.prompts import substage_1_prompt
+from kindgen.stages.stage_1.prompts import substage_1_prompt, substage_1_prompt_eval
 
 
 def run_stage_1_substage_1(message: str, **kwargs) -> Generator[str, None, None]:
     prompt = substage_1_prompt.replace("<user-situation>", message)
+    yield from stream(prompt)
+
+
+def run_stage_1_substage_1_eval(message: str, **kwargs) -> Generator[str, None, None]:
+    prompt = substage_1_prompt_eval.replace("<user-situation>", message)
     yield from stream(prompt)
 
 

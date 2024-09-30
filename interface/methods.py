@@ -8,6 +8,6 @@ def reset_conversation() -> Union[ChatHistory, Stage]:
         {"role": "assistant", "text": "Can you tell me a bit about your situation?"},
     ]
 
-    stage = Stage(stage=1, substage=1)
+    stage = Stage(stage=1, substage=1, val=0)
 
     return conversation, stage
