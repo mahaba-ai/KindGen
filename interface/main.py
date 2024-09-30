@@ -53,7 +53,6 @@ def TEXT_RESPONSE(user_input: str, CURRENT_STAGE: Stage, **kwargs):
                 conversation_stage=CURRENT_STAGE,
             )
             response = "".join(response_gen)
-            print(f"assistant response = {response}")
 
             if "yes" in response.lower():
                 state_passed = True
@@ -80,7 +79,6 @@ def TEXT_RESPONSE(user_input: str, CURRENT_STAGE: Stage, **kwargs):
     if user_input:
         CONVERSATION.append({"role": "user", "text": user_input})
 
-    print(CONVERSATION)
     CONVERSATION.append({"role": "assistant", "text": assistant_response})
     STATE["stage"].next_substage()
     response_handler()
