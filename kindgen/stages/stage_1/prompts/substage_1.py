@@ -11,3 +11,10 @@ Your response should address the user's situation:
 
 <user-situation>
 """
+
+prompt_eval = """
+
+Is this user input describing a valid issue related to school/eduation? Your must answer with one word: 'yes' or 'no'.
+
+<user-situation>
+"""
