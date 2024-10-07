@@ -22,13 +22,21 @@ def run_stage_1_substage_3(**kwargs) -> Generator[str, None, None]:
 
 def run_stage_1_substage_4(**kwargs) -> Generator[str, None, None]:
     yield from fake_stream(
-        "Alright, let’s dive deeper into your situation. Firstly, who is it affecting? Select as many of the options below that apply."
+        "Alright, let's dive deeper into your situation. Firstly, who is it affecting? Select as many of the options below that apply."
     )
 
 
-def run_stage_1_substage_6(**kwargs) -> Generator[str, None, None]:
+def run_stage_1_substage_7(**kwargs) -> Generator[str, None, None]:
     yield from fake_stream("Thanks! Another couple of questions from me:")
 
 
-def run_stage_1_substage_8(**kwargs) -> Generator[str, None, None]:
-    yield from fake_stream("Don't worry! We will get on top of this.")
+def run_stage_1_substage_10(**kwargs) -> Generator[str, None, None]:
+    yield from fake_stream(
+        "So that you're aware - your school's standard procedure for such a situation is to notify Pastoral Care and the Head of Department, in addition to exploring a solution to the classroom situation for yourself."
+    )
+    yield from fake_stream(
+        "Kind Gen offers a specialised coaching service to parents via the school for such situations.\n\n"
+    )
+    yield from fake_stream(
+        "At this point the AI would offer some resources to download."
+    )

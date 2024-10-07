@@ -36,51 +36,86 @@ CONVERSATION: ChatHistory = st.session_state.conversation
 
 
 def TEXT_RESPONSE(user_input: str, CURRENT_STAGE: Stage, **kwargs):
-    if user_input:
+    if CURRENT_STAGE.stage == 3 and CURRENT_STAGE.substage == 1:
+        assistant_message = st.chat_message("assistant", avatar=AVATAR["assistant"])
+        assistant_response = assistant_message.write_stream(
+            respond(
+                message="",
+                chat_history=CONVERSATION,
+                conversation_stage=CURRENT_STAGE,
+            )
+        )
+    elif CURRENT_STAGE.stage == 3 and CURRENT_STAGE.substage == 2:
+        while not user_input:
+            user_input = st.chat_input()
+            st.stop()
+
         st.chat_message("user", avatar=AVATAR["user"]).write(user_input)
-
-    print("assistant message = ")
-    assistant_message = st.chat_message("assistant", avatar=AVATAR["assistant"])
-
-    if CURRENT_STAGE.stage == 1 and CURRENT_STAGE.substage == 1:
-        STATE["stage"].update_val(True)
-        state_passed = False
-
-        while not state_passed:
-            response_gen = respond(
+        assistant_message = st.chat_message("assistant", avatar=AVATAR["assistant"])
+        assistant_response = assistant_message.write_stream(
+            respond(
                 message=user_input,
                 chat_history=CONVERSATION,
                 conversation_stage=CURRENT_STAGE,
             )
-            response = "".join(response_gen)
-
-            if "yes" in response.lower():
-                state_passed = True
-            else:
-                assistant_response = assistant_message.write_stream(
-                    fake_stream("I'm not sure I understand. Could you try again?")
-                )
-                CONVERSATION.append({"role": "assistant", "text": assistant_response})
-                STATE["stage"].update_val(False)
-                user_input = None
-                while not user_input:
-                    user_input = st.session_state.get("user_input", None)
-
-    STATE["stage"].update_val(False)
-    assistant_response = assistant_message.write_stream(
-        respond(
-            message=user_input,
-            chat_history=CONVERSATION,
-            conversation_stage=CURRENT_STAGE,
         )
-    )
+    else:
+        if user_input:
+            st.chat_message("user", avatar=AVATAR["user"]).write(user_input)
+
+        print("assistant message = ")
+        assistant_message = st.chat_message("assistant", avatar=AVATAR["assistant"])
+
+        if CURRENT_STAGE.stage == 1 and CURRENT_STAGE.substage == 1:
+            STATE["stage"].update_val(True)
+            state_passed = False
+
+            while not state_passed:
+                response_gen = respond(
+                    message=user_input,
+                    chat_history=CONVERSATION,
+                    conversation_stage=CURRENT_STAGE,
+                )
+                response = "".join(response_gen)
+
+                if "yes" in response.lower():
+                    state_passed = True
+                else:
+                    assistant_response = assistant_message.write_stream(
+                        fake_stream(
+                            "I'm not sure I can help with that! Could you try again?"
+                        )
+                    )
+                    CONVERSATION.append(
+                        {"role": "assistant", "text": assistant_response}
+                    )
+                    STATE["stage"].update_val(False)
+                    user_input = None
+                    while not user_input:
+                        user_input = st.session_state.get("user_input", None)
+
+        STATE["stage"].update_val(False)
+        print(CURRENT_STAGE)
+        assistant_response = assistant_message.write_stream(
+            respond(
+                message=user_input,
+                chat_history=CONVERSATION,
+                conversation_stage=CURRENT_STAGE,
+            )
+        )
+        print(assistant_response)
 
     time.sleep(2)
     if user_input:
         CONVERSATION.append({"role": "user", "text": user_input})
 
     CONVERSATION.append({"role": "assistant", "text": assistant_response})
-    STATE["stage"].next_substage()
+    if (
+        STATE["stage"].stage == 1 and STATE["stage"].substage == 11
+    ):  # TODO: add 'last substage'
+        STATE["stage"].next_stage()
+    else:
+        STATE["stage"].next_substage()
     response_handler()
 
 
@@ -102,9 +137,27 @@ def get_affected_people(*args, **kwargs):
     st.rerun()
 
 
+def get_how_affected(*args, **kwargs):
+    PLACEHOLDER_STATE["show"] = True
+    PLACEHOLDER_STATE["stage"] = "how_affected"
+    st.rerun()
+
+
 def get_what_have_you_tried(*args, **kwargs):
     PLACEHOLDER_STATE["show"] = True
     PLACEHOLDER_STATE["stage"] = "tried"
+    st.rerun()
+
+
+def choose_additional_needs(*args, **kwargs):
+    PLACEHOLDER_STATE["show"] = True
+    PLACEHOLDER_STATE["stage"] = "choose_additional_needs"
+    st.rerun()
+
+
+def download_resource(*args, **kwargs):
+    PLACEHOLDER_STATE["show"] = True
+    PLACEHOLDER_STATE["stage"] = "download_resource"
     st.rerun()
 
 
@@ -114,10 +167,15 @@ RESPONSE_TYPES = {
     (1, 3): TEXT_RESPONSE,
     (1, 4): TEXT_RESPONSE,
     (1, 5): get_affected_people,
-    (1, 6): TEXT_RESPONSE,
-    (1, 7): get_what_have_you_tried,
-    (1, 8): TEXT_RESPONSE,
-    (1, 9): END,
+    (1, 6): get_how_affected,
+    (1, 7): TEXT_RESPONSE,
+    (1, 8): get_what_have_you_tried,
+    (1, 9): choose_additional_needs,
+    (1, 10): TEXT_RESPONSE,
+    (1, 11): download_resource,
+    (3, 1): TEXT_RESPONSE,
+    (3, 2): TEXT_RESPONSE,
+    (3, 3): END,
 }
 
 AVATAR = {"assistant": ASSISTANT_AVATAR_PATH, "user": USER_AVATAR_PATH}
@@ -175,8 +233,8 @@ if PLACEHOLDER_STATE["show"]:
                     "Telling them off in class",
                     "Talking to them privately",
                     "I've threatened them with detention",
-                    "I wrote to their parents",
-                    "Other (please write)",  # NOTE: How will we implement 'other' ?
+                    "I've written to their parents",
+                    # "Other (please write)",  # NOTE: How will we implement 'other' ?
                 ],
             )
 
@@ -185,7 +243,6 @@ if PLACEHOLDER_STATE["show"]:
                 ["Yes", "No"],
             )
             SELECTIONS = f"[*selection input*] Still a current problem? {STATE['still_exists_flag']}. Solutions tried: {', '.join(STATE['solutions_tried'])}."
-
         elif placeholder_stage == "affected_people":
             STATE["affected_people"] = st.multiselect(
                 "Please can you pick the people affected?",
@@ -194,16 +251,53 @@ if PLACEHOLDER_STATE["show"]:
                     "Myself as a teacher",
                     "Other children in class",
                     "The whole class",
-                    "The child’s parents",
+                    "The child's parents",
                 ],
             )
-
             SELECTIONS = f"[*selection input*] People Affected: {', '.join(STATE['affected_people'])}."
+        elif placeholder_stage == "how_affected":
+            STATE["how_affected"] = st.multiselect(
+                "How is it affecting them? Please select all that apply.",
+                [
+                    "It is interrupting lessons and activities, reducing learning time for all students.",
+                    "Other students are losing focus on their work, affecting their ability to learn and participate.",
+                    "I have to spend more time managing the misbehaving child, reducing attention given to other students.",
+                    "It is creating a tense or negative environment, impacting the overall mood of the class.",
+                    "Some students are influenced to join in the misbehavior, escalating the problem.",
+                    "The class is falling behind schedule as more time is spent addressing behavioral issues.",
+                ],
+            )
+            SELECTIONS = (
+                f"[*selection input*] How Affected: {', '.join(STATE['how_affected'])}."
+            )
+        elif placeholder_stage == "choose_additional_needs":
+            STATE["Special needs"] = st.multiselect(
+                "To your knowledge, does the child (please select any that apply):",
+                [
+                    "have special educational needs or disabilities (such as ADHD, dyslexia, dyspraxia, OCD, on the autistic spectrum)?",
+                    "have a disturbed situation at home (such as parents splitting up, domestic violence)?",
+                    "have language difficulties (such as their mother tongue being different to that spoken at school)?",
+                    "also disrupt the lessons of other teachers?",
+                ],
+            )
+            SELECTIONS = f"[*selection input*] Special needs: {', '.join(STATE['Special needs'])}."
+        elif placeholder_stage == "download_resource":
+            text_contents = """This is some text"""
+            text_title = "Some book title"
+            STATE["Download resource"] = st.download_button(
+                "Download some text", text_contents
+            )
+            SELECTIONS = f"Text resource {text_title}"
 
-        submit = st.button("Finalize input")
+        submit = st.button("Continue")
         if submit:
             PLACEHOLDER_STATE["show"] = False
-            STATE["stage"].next_substage()
+            if (
+                STATE["stage"].stage == 1 and STATE["stage"].substage == 11
+            ):  # TODO: add 'last substage'
+                STATE["stage"].next_stage()
+            else:
+                STATE["stage"].next_substage()
             STATE["NEED_REBOOT"] = True
             CONVERSATION.append({"role": "user", "text": SELECTIONS})
             st.rerun()
