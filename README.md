@@ -31,3 +31,9 @@ If you want to pip install package XYZ run
 ```
 poetry add XYZ
 ```
+
+# TODO
+* add in all summarised principles
+* add validation to all stages (ie cannot continue if user input is not valid, or if user does not make a selection at dropdown, etc)
+* add 'last substage' function
+* 'force' go to bottom of chat after dropdown 

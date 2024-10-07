@@ -7,8 +7,10 @@ from kindgen.stages import (
     run_stage_1_substage_1_eval,
     run_stage_1_substage_3,
     run_stage_1_substage_4,
-    run_stage_1_substage_6,
-    run_stage_1_substage_8,
+    run_stage_1_substage_7,
+    run_stage_1_substage_10,
+    run_stage_3_substage_1,
+    run_stage_3_substage_2,
 )
 
 
@@ -22,8 +24,10 @@ class Stage(BaseModel):
         (1, 1, 1): run_stage_1_substage_1_eval,
         (1, 3, 0): run_stage_1_substage_3,
         (1, 4, 0): run_stage_1_substage_4,
-        (1, 6, 0): run_stage_1_substage_6,
-        (1, 8, 0): run_stage_1_substage_8,
+        (1, 7, 0): run_stage_1_substage_7,
+        (1, 10, 0): run_stage_1_substage_10,
+        (3, 1, 0): run_stage_3_substage_1,
+        (3, 2, 0): run_stage_3_substage_2,
     }
 
     def next_substage(self):
@@ -38,7 +42,10 @@ class Stage(BaseModel):
 
     def next_stage(self):
         """Move to the next stage and reset the substage."""
-        self.stage += 1
+        if self.stage == 1:
+            self.stage = 3  # TODO: fix
+        else:
+            self.stage += 1
         self.reset_substage()
 
     def update_val(self, val):
