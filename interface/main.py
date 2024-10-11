@@ -135,7 +135,7 @@ if user_input:
             """
         elif stage == 2:
             print("running stage 2")
-            return f"""
+            return """
             You are an expert in empathy and communication, acting as a coach for teachers navigating challenging situations.
             When you respond, do so promptly and clearly. 
 
@@ -149,7 +149,7 @@ if user_input:
             """
         elif stage == 3:
             print("running stage 3")
-            return f"""
+            return """
             You are an expert in empathy and communication, acting as a coach for teachers navigating challenging situations.
             When you respond, do so promptly and clearly. 
 
@@ -161,7 +161,7 @@ if user_input:
             """
         elif stage == 4:
             print("running stage 4")
-            return f"""
+            return """
             You are an expert in empathy and communication, acting as a coach for teachers navigating challenging situations.
             When you respond, do so promptly and clearly. 
 
@@ -173,7 +173,7 @@ if user_input:
             """
         elif stage == 5:
             print("running stage 5")
-            return f"""
+            return """
             You are an expert in empathy and communication, acting as a coach for teachers navigating challenging situations.
             When you respond, do so promptly and clearly. 
 
@@ -185,7 +185,7 @@ if user_input:
             """
         elif stage == 6:
             print("running stage 6")
-            return f"""
+            return """
             You are an expert in empathy and communication, acting as a coach for teachers navigating challenging situations.
             When you respond, do so promptly and clearly. 
 
@@ -199,7 +199,7 @@ if user_input:
             """
         elif stage == 7:
             print("running stage 7")
-            return f"""
+            return """
             You are an expert in empathy and communication, acting as a coach for teachers navigating challenging situations.
             When you respond, do so promptly and clearly. 
 
