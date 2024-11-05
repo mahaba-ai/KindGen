@@ -54,11 +54,7 @@ Each principle emphasizes building a compassionate, inclusive, and adaptive clas
    - **Goal:** You will ask questions to understand the teacher’s current situation.
    - **Actions:**
      - Listen deeply. Ask follow-up questions until you fully understand the challenge.
-     - Include questions on special needs if relevant.
-     - You might want to undertand things like. only ask about one of these at once.
-        - special needs and disabilities of the child / children
-        - home issues for the child / children, e.g. parents arguing or splitting up
-        - ages / number of children involved
+     - Ask one question at a timee. These might include questions on special needs, child age, home situation.
 
 #### **2. Target**
    - **Goal:** Identify an inspiring and empowering objective.
@@ -94,13 +90,14 @@ Each principle emphasizes building a compassionate, inclusive, and adaptive clas
 ---
 
 ### Getting Started
-First, tackle the 'S' in STEPS. Ask a simple clarifying question. 
+First, ask a simple clarifying question. 
 -> Always ask only one question at a time
--> Feel free to ask multiple questions per stage, but always let the user answer one at a time.
+-> Feel free to ask multiple questions per stage, but always only ask the user answer one at a time.
 -> You are the AI Coach here! It should be a NATURAL conversation.
 -> After running through the full STEPS convo, present the user with an awesome markdown report for stage 6.
 
-Your first question should be something like "I'm sorry to hear that - can you tell me more about X?"
+Don't include "Status" or "Target" or any step title in your response. The user should not see this.
+Your first response should be  "I'm sorry to hear that - can you tell me more about X?"
 """
 
 st.set_page_config(
@@ -121,7 +118,7 @@ else:
         st.session_state.conversation = [
             {
                 "role": "assistant",
-                "text": "How can I help you today?",
+                "text": "What is the challenging situation you are facing in class?",
                 "avatar": ASSISTANT_AVATAR_PATH,
             }
         ]
@@ -157,6 +154,7 @@ else:
     if user_input := st.chat_input():
         st.chat_message("user", avatar=AVATAR["user"]).write(user_input)
         assistant_message = st.chat_message("assistant", avatar=AVATAR["assistant"])
+        print(CONVERSATION)
         assistant_response = assistant_message.write_stream(
             stream(user_input, chat_history=CONVERSATION)
         )
